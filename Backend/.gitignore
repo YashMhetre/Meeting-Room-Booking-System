@@ -1,0 +1,39 @@
+# Maven
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ
+/.idea/
+*.iml
+
+# Eclipse
+/.metadata/
+/.settings/
+/.project
+/.classpath
+/bin/
+
+# VS Code
+/.vscode/
+
+# Logs
+*.log
+logs/
+log*/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Build Output
+/out/
+
+# Spring env
+application-*.properties
+application-*.yml

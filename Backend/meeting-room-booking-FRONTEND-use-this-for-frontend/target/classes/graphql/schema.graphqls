@@ -1,0 +1,89 @@
+# Save this as: src/main/resources/graphql/schema.graphqls
+
+type Query {
+  # Get all rooms
+  getAllRooms: [Room!]!
+  
+  # Get room by ID
+  getRoom(id: ID!): Room
+  
+  # Get room availability for a specific date
+  getRoomAvailability(roomId: ID!, date: String!): RoomAvailability!
+  
+  # Get all room availabilities for a date
+  getAllRoomAvailabilities(date: String!): [RoomAvailability!]!
+  
+  # Get all bookings for the current user
+  getMyBookings: [Booking!]!
+  
+  # Get user bookings by date
+  getMyBookingsByDate(date: String!): [Booking!]!
+  
+  # Get user bookings by room
+  getMyBookingsByRoom(roomId: ID!): [Booking!]!
+  
+  # Get a specific booking
+  getBooking(id: ID!): Booking
+}
+
+type Mutation {
+  # Room Management (Admin only)
+  createRoom(input: RoomInput!): Room!
+  updateRoom(id: ID!, input: RoomInput!): Room!
+  deleteRoom(id: ID!): Boolean!
+  
+  # Booking Management - FIXED: Changed from Long to ID
+  createBooking(input: BookingInput!): Booking!
+  completeBooking(id: ID!): Booking!
+  cancelBooking(id: ID!): Booking!
+}
+
+# Types
+type Room {
+  id: ID!
+  name: String!
+  capacity: Int!
+  available: Boolean!
+}
+
+type Booking {
+  id: ID!
+  room: Room!
+  userEmail: String!
+  userName: String!
+  bookingDate: String!
+  startTime: String!
+  endTime: String!
+  durationMinutes: Int!
+  status: String!
+  createdAt: String!
+  completedAt: String
+}
+
+type RoomAvailability {
+  roomId: ID!
+  roomName: String!
+  capacity: Int!
+  bookedSlots: [TimeSlot!]!
+}
+
+type TimeSlot {
+  startTime: String!
+  endTime: String!
+  bookedBy: String!
+  bookingId: ID!
+}
+
+# Inputs
+input RoomInput {
+  name: String!
+  capacity: Int!
+  available: Boolean
+}
+
+input BookingInput {
+  roomId: ID!
+  bookingDate: String!
+  startTime: String!
+  durationMinutes: Int!
+}

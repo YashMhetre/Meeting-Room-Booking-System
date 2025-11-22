@@ -1,0 +1,161 @@
+{
+  "validation_error_examples": [
+    {
+      "scenario": "Missing Required Fields - Register",
+      "mutation": "register",
+      "input": {
+        "email": "",
+        "password": "123",
+        "name": ""
+      },
+      "response": {
+        "errors": [
+          {
+            "message": "Validation failed",
+            "locations": [{"line": 2, "column": 3}],
+            "path": ["register"],
+            "extensions": {
+              "errorCode": "VAL_004",
+              "timestamp": "2025-11-16T14:30:00.123456",
+              "details": {
+                "email": "Email is required",
+                "password": "Password must be at least 6 characters",
+                "name": "Name is required"
+              },
+              "classification": "BAD_REQUEST"
+            }
+          }
+        ],
+        "data": {
+          "register": null
+        }
+      }
+    },
+    {
+      "scenario": "Invalid Email Format",
+      "mutation": "login",
+      "input": {
+        "email": "invalid-email",
+        "password": "123456"
+      },
+      "response": {
+        "errors": [
+          {
+            "message": "Validation failed",
+            "locations": [{"line": 2, "column": 3}],
+            "path": ["login"],
+            "extensions": {
+              "errorCode": "VAL_004",
+              "timestamp": "2025-11-16T14:30:00.123456",
+              "details": {
+                "email": "Email must be valid"
+              },
+              "classification": "BAD_REQUEST"
+            }
+          }
+        ],
+        "data": {
+          "login": null
+        }
+      }
+    },
+    {
+      "scenario": "Missing Booking Fields",
+      "mutation": "createBooking",
+      "input": {
+        "roomId": null,
+        "bookingDate": "",
+        "startTime": "",
+        "durationMinutes": null
+      },
+      "response": {
+        "errors": [
+          {
+            "message": "Validation failed",
+            "locations": [{"line": 2, "column": 3}],
+            "path": ["createBooking"],
+            "extensions": {
+              "errorCode": "VAL_004",
+              "timestamp": "2025-11-16T14:30:00.123456",
+              "details": {
+                "roomId": "Room ID is required",
+                "bookingDate": "Booking date is required",
+                "startTime": "Start time is required",
+                "durationMinutes": "Duration is required"
+              },
+              "classification": "BAD_REQUEST"
+            }
+          }
+        ],
+        "data": {
+          "createBooking": null
+        }
+      }
+    },
+    {
+      "scenario": "Invalid Date/Time Format",
+      "mutation": "createBooking",
+      "input": {
+        "roomId": 1,
+        "bookingDate": "2025/11/16",
+        "startTime": "2:30 PM",
+        "durationMinutes": 30
+      },
+      "response": {
+        "errors": [
+          {
+            "message": "Validation failed",
+            "locations": [{"line": 2, "column": 3}],
+            "path": ["createBooking"],
+            "extensions": {
+              "errorCode": "VAL_004",
+              "timestamp": "2025-11-16T14:30:00.123456",
+              "details": {
+                "bookingDate": "Booking date must be in format YYYY-MM-DD",
+                "startTime": "Start time must be in format HH:mm"
+              },
+              "classification": "BAD_REQUEST"
+            }
+          }
+        ],
+        "data": {
+          "createBooking": null
+        }
+      }
+    },
+    {
+      "scenario": "Password Too Short",
+      "mutation": "register",
+      "input": {
+        "email": "test@example.com",
+        "password": "123",
+        "name": "John Doe"
+      },
+      "response": {
+        "errors": [
+          {
+            "message": "Validation failed",
+            "locations": [{"line": 2, "column": 3}],
+            "path": ["register"],
+            "extensions": {
+              "errorCode": "VAL_004",
+              "timestamp": "2025-11-16T14:30:00.123456",
+              "details": {
+                "password": "Password must be at least 6 characters"
+              },
+              "classification": "BAD_REQUEST"
+            }
+          }
+        ],
+        "data": {
+          "register": null
+        }
+      }
+    }
+  ],
+  "frontend_validation_handling": {
+    "description": "How to handle validation errors in your frontend",
+    "javascript_example": "const response = await fetch('/graphql', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ query, variables })\n});\n\nconst result = await response.json();\n\nif (result.errors) {\n  const error = result.errors[0];\n  const errorCode = error.extensions?.errorCode;\n  \n  if (errorCode === 'VAL_004') {\n    // Validation errors - show field-specific errors\n    const fieldErrors = error.extensions.details;\n    \n    Object.keys(fieldErrors).forEach(field => {\n      showFieldError(field, fieldErrors[field]);\n    });\n    \n    // Example:\n    // showFieldError('email', 'Email is required')\n    // showFieldError('password', 'Password must be at least 6 characters')\n  }\n}",
+    "react_example": "const [errors, setErrors] = useState({});\n\nconst handleSubmit = async (formData) => {\n  try {\n    const result = await mutation({ variables: formData });\n    // Success\n  } catch (error) {\n    if (error.graphQLErrors?.[0]?.extensions?.errorCode === 'VAL_004') {\n      const fieldErrors = error.graphQLErrors[0].extensions.details;\n      setErrors(fieldErrors);\n    }\n  }\n};\n\n// In JSX:\n<input name=\"email\" />\n{errors.email && <span className=\"error\">{errors.email}</span>}\n\n<input name=\"password\" />\n{errors.password && <span className=\"error\">{errors.password}</span>}"
+  }
+}
